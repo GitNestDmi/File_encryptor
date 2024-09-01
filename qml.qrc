@@ -1,5 +1,11 @@
 <RCC>
     <qresource prefix="/">
-        <file>main.qml</file>
+        <file>QML/main.qml</file>
+        <file>QML/NewLabel.qml</file>
+        <file>QML/NewButton.qml</file>
+        <file>QML/NewInfCell.qml</file>
+        <file>QML/RectTitle.qml</file>
+        <file>QML/CheckBoxNew.qml</file>
+        <file>QML/InputField.qml</file>
     </qresource>
 </RCC>
