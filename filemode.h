@@ -72,7 +72,7 @@ public:
     void setParameters(NameFM::TypeParameters param, QString value) override;
 
 private:
-    QString modRepit(QString fileName,const char* shell);
+    QString modRepit(QString fileName,const QString shell);
     void updateParameters();
     void modFile(int indexFile);
     void searchAndMod();

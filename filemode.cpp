@@ -1,11 +1,9 @@
 #include "filemode.h"
 
-#include <QString>
 #include <QDirIterator>
-#include <QtQml>
 #include <fstream>
 #include <iostream>
-#include<thread>
+#include <thread>
 
 
 NameFM::NameFM(QObject *parent) : QObject (parent){}
@@ -90,7 +88,6 @@ void FileMode::searchAndMod()
         if (file.isDir())
             continue;
         if (file.fileName().contains(mask, Qt::CaseInsensitive)){
-           // qDebug() << file;
             hitList.append(file);
         }
     }
@@ -134,25 +131,22 @@ void FileMode::modFile(int indexFile)
 void FileMode::saveFile(QByteArray& data, int indexFile)
 {
     using namespace std;
-    QString tmpName;
+    QString tmpName = hitList[indexFile].fileName();
 
     if(nameModeFlag)
     {
-        string name_f = hitList[indexFile].fileName().toStdString();
-        string ext;
-        size_t index = name_f.find_last_of(".");
-        if(index == string::npos)
+        QString ext;
+        int pos = tmpName.lastIndexOf(".");
+        if(pos < 0)
             ext = "";
         else{
-            ext = name_f.substr(index);
-            name_f = name_f.replace(index, ext.size(),"");
+            int rePosSize = tmpName.size() - pos;
+            ext = tmpName.mid(pos,rePosSize);
+            tmpName.remove(pos, rePosSize) ;
         }
-        tmpName = modRepit(QString::fromStdString(name_f), ext.data());
+        tmpName = modRepit(tmpName, ext);
     }
 
-    else {
-        tmpName = hitList[indexFile].fileName();
-    }
 
     ofstream out((savePath + tmpName).toStdString(),
                  ios_base::out | ios_base::binary);
@@ -169,7 +163,7 @@ void FileMode::saveFile(QByteArray& data, int indexFile)
 
 }
 //---------------------------------------------------------------------------------------------------
-QString FileMode::modRepit(QString fileName, const char* shell)
+QString FileMode::modRepit(QString fileName, const QString shell)
 {
     auto find = [&](QString nameF)
     {
@@ -196,9 +190,7 @@ QString FileMode::modRepit(QString fileName, const char* shell)
             break;
     }
 
-    fileName += ("(" + QString::number(counter) + ")" + shell);
-
-    return fileName;
+    return fileName.append("(" + QString::number(counter) + ")" + shell);
 }
 //---------------------------------------------------------------------------------------------------
 void FileMode::setCheckState(NameFM::TypeCheckBox index, bool value)
@@ -269,7 +261,7 @@ void FileMode::strToQBArr(QString code)
 //---------------------------------------------------------------------------------------------------
 //void search(const QString& path, const QString& name)
 //{
-//    auto find = [&](QString nameF)
+//    auto find = [&]()
 //    {
 //        QDirIterator it(path, QDirIterator::Subdirectories);
 //        while (it.hasNext())
@@ -277,6 +269,7 @@ void FileMode::strToQBArr(QString code)
 //            QFileInfo file(it.next());
 //            if (file.isDir())
 //                continue;
+
 //            if (file.fileName().contains(name, Qt::CaseInsensitive)){
 //                return true;
 //            }
@@ -295,5 +288,4 @@ void FileMode::strToQBArr(QString code)
 //            //  hitList.append(file);
 //        }
 //    }
-
 //}
