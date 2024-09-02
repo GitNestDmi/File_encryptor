@@ -8,9 +8,10 @@ import NameFM 1.0
 
 ApplicationWindow {
     visible: true
-    width: 640
-    height: 480
-
+    minimumWidth: 650
+    minimumHeight: 480
+    maximumHeight: 520
+    maximumWidth: 800
 
     ListModel {
         id: checkList
@@ -40,6 +41,7 @@ ApplicationWindow {
             }
         }
         NewButton {
+            enabled:  ( fMode.parameters.status && isOn) || ( !fMode.parameters.status)
             id: startBut
             height: 40
             width: parent.width/2 - 40
@@ -61,7 +63,7 @@ ApplicationWindow {
                     var replay = rectSettings.repeaterItem.itemAt(2).itemChecked
                     if(replay)
                         isOn = !isOn
-                        fMode.startModification(replay);
+                    fMode.startModification(replay);
                 }
             }
         }
@@ -69,7 +71,8 @@ ApplicationWindow {
             id: statusCell
             height: 40
             width: parent.width/2 - 40
-            indiTitle: "Статус обработки файлов"
+            indiTitle: fMode.parameters.status ? "Идет обработка файлов   " :
+                                                 "Ожидание начала работы..."
             isOn: fMode.parameters.status
             anchors{
                 right: parent.right
@@ -80,6 +83,7 @@ ApplicationWindow {
         }
     }
     Rectangle{
+        enabled: !fMode.parameters.status
         anchors{
             top: head.bottom
             bottom: parent.bottom
@@ -114,7 +118,7 @@ ApplicationWindow {
                         InputField{
                             id: input
                             anchors.fill: parent
-                            anchors.rightMargin: parent.width/4
+                            anchors.rightMargin: parent.width * 0.15
                             widthLabel: parent.width * 0.31
                             titleText: !index ? "Путь для чтения": "Путь для сохраниения"
                             textValue: !index? fMode.parameters.searchPath : fMode.parameters.savePath

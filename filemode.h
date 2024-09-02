@@ -4,6 +4,7 @@
 #include <QFileInfoList>
 #include <QVariant>
 #include <QTimer>
+#include<mutex>
 
 class NameFM: public QObject
 {
@@ -74,7 +75,7 @@ private:
     QString modRepit(QString fileName,const char* shell);
     void updateParameters();
     void modFile(int indexFile);
-    void searchFiles();
+    void searchAndMod();
     void saveFile(QByteArray& code,int indexFile);
     void strToQBArr(QString code);
 
@@ -82,16 +83,17 @@ private:
     bool delOriginFlag = false;
     bool nameModeFlag = false;
     bool timerFlag = false;
-    uint timeMode = 5;
-    QString searchPath = "C:/Users/Dmitry/Desktop/test/ff/";//{};
-    QString savePath = "C:/Users/Dmitry/Desktop/test/pup/";//{};
+    uint timeMode {30};
+    QString searchPath {};
+    QString savePath {};
     QString mask {};
-    QByteArray key {};//= "0000000000000001";
+    QByteArray key {};
     QFileInfoList hitList;
     QTimer modTimer;
+    std::mutex mtx;
 
 private slots:
-    void searchAndMod();
+    void onTimerTimeout();
 
 };
 
